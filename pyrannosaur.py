@@ -47,18 +47,18 @@ class Manager:
         '''
         page: list[str] = [None, None, None]
         # generate a hello world page just to test
-        page[0] = "<!DOCTYPE html>\n<html>\n<head>\n\t<title>test head</title>\n</head>\n<body>\n"
+        page[0] = "<!DOCTYPE html>\n<html>\n<head>\n\t<title>Test page</title>\n</head>\n<body>\n"
         page[1] = "\t<h1>Hello World!</h1>\n"
         page[2] = "</body>\n</html>"
 
         return page
     
-    def write_to_file(self, function_type, file) -> None:
+    def write_to_file(self, function_to_write: list[str], file: str) -> None:
         '''
         Write data returned from a function to a file.
         '''
         with open(file, 'w') as f:
-            for line in function_type:
+            for line in function_to_write:
                 f.write(line)
         f.close()
 
