@@ -13,32 +13,6 @@ class Generator:
     def __init__(self) -> None:
         self.m = Manager()
 
-    def write_to_file(self, function_to_write: list[str], file: str) -> None:
-        self.m.check_for_valid_directory()
-        '''
-        Write data returned from a function to a file.
-        '''
-        with open(file, 'w') as f:
-            for line in function_to_write:
-                f.write(line)
-        f.close()
-    
-    def generate_html_with_template(self) -> list[str]:
-        self.m.check_for_valid_directory()
-        '''
-        Generate both the head, footer and inject content into a html page.
-        Head will be stored at [0] and footer at [2].
-        Markdown or content will be injected into the list at [1].
-        Returns a list of str type.
-        '''
-        page: list[str] = [None, None, None]
-        # generate a hello world page just to test
-        page[0] = "<!DOCTYPE html>\n<html>\n<head>\n\t<title>Test page</title>\n</head>\n<body>\n"
-        page[1] = "\t<h1>Hello World!</h1>\n"
-        page[2] = "</body>\n</html>"
-
-        return page
-    
     def convert_markdown_to_html(self) -> None:
         self.m.check_for_valid_directory()
         # go through /posts and convert any .md files to .html files.
@@ -66,10 +40,36 @@ class Generator:
                 f.write(md_content[i])
                 f.close()
 
+    def write_to_file(self, function_to_write: list[str], file: str) -> None:
+        self.m.check_for_valid_directory()
+        '''
+        Write data returned from a function to a file.
+        '''
+        with open(file, 'w') as f:
+            for line in function_to_write:
+                f.write(line)
+        f.close()
+    
+    def generate_page_with_template(self) -> list[str]:
+        self.m.check_for_valid_directory()
+        '''
+        Generate both the head, footer and inject content into a html page.
+        Head will be stored at [0] and footer at [2].
+        Markdown or content will be injected into the list at [1].
+        Returns a list of str type.
+        '''
+        page: list[str] = [None, None, None]
+        # generate a hello world page just to test
+        page[0] = "<!DOCTYPE html>\n<html>\n<head>\n\t<title>Test page</title>\n</head>\n<body>\n"
+        page[1] = "\t<h1>Hello World!</h1>\n"
+        page[2] = "</body>\n</html>"
+
+        return page
+    
 
 class Manager:
     '''
-    Manages a pyrannosaur website that has been generated.
+    Manages files/directories in a pyrannosaur website.
     '''
     def __init__(self) -> None:
         '''
@@ -98,6 +98,13 @@ class Manager:
                 "Check the directory path is correct and run the script again."
             )
             exit(0)
+
+
+class TemplateLoader:
+    '''
+    Defines and loads templates for pyrannosaur websites.
+    '''
+    pass
 
 g = Generator()
 g.convert_markdown_to_html()
