@@ -5,8 +5,72 @@ from sys import exit
 from markdown import markdown
 
 
-class Manager:
+class Generator:
+    '''
+    Generates content such as directories, pages and links within .html files
+    for new posts in a new or existing pyrannosaur website.
+    '''
+    def __init__(self) -> None:
+        self.m = Manager()
 
+    def write_to_file(self, function_to_write: list[str], file: str) -> None:
+        self.m.check_for_valid_directory()
+        '''
+        Write data returned from a function to a file.
+        '''
+        with open(file, 'w') as f:
+            for line in function_to_write:
+                f.write(line)
+        f.close()
+    
+    def generate_html_with_template(self) -> list[str]:
+        self.m.check_for_valid_directory()
+        '''
+        Generate both the head, footer and inject content into a html page.
+        Head will be stored at [0] and footer at [2].
+        Markdown or content will be injected into the list at [1].
+        Returns a list of str type.
+        '''
+        page: list[str] = [None, None, None]
+        # generate a hello world page just to test
+        page[0] = "<!DOCTYPE html>\n<html>\n<head>\n\t<title>Test page</title>\n</head>\n<body>\n"
+        page[1] = "\t<h1>Hello World!</h1>\n"
+        page[2] = "</body>\n</html>"
+
+        return page
+    
+    def convert_markdown_to_html(self) -> None:
+        self.m.check_for_valid_directory()
+        # go through /posts and convert any .md files to .html files.
+
+        # build file names
+        md_files: list[str] = []
+        for file in listdir("posts"):
+            if file.split(".")[-1] == "md":
+                md_files.append(file)
+        
+        html_files: list[str] = []
+        for file in md_files:
+            html_files.append(file.split(".")[0] + ".html")
+
+        # read the files
+        md_content: list[str] = []
+        for file in md_files:
+            with open(join("posts", file), 'r') as f:
+                md_content.append(markdown(f.read()))
+                f.close()
+
+        # write the files
+        for i, file in enumerate(html_files):
+            with open(join("html", file), 'w') as f:
+                f.write(md_content[i])
+                f.close()
+
+
+class Manager:
+    '''
+    Manages a pyrannosaur website that has been generated.
+    '''
     def __init__(self) -> None:
         '''
         Initialise if posts/templates directories exist if they don't exist
@@ -35,59 +99,5 @@ class Manager:
             )
             exit(0)
 
-    def convert_markdown_to_html(self) -> None:
-        self.check_for_valid_directory()
-        # go through /posts and convert any .md files to .html files.
-
-        # build file names
-        md_files: list[str] = []
-        for file in listdir("posts"):
-            if file.split(".")[-1] == "md":
-                md_files.append(file)
-        
-        html_files: list[str] = []
-        for file in md_files:
-            html_files.append(file.split(".")[0] + ".html")
-
-        # read the files
-        md_content: list[str] = []
-        for file in md_files:
-            with open(join("posts", file), 'r') as f:
-                md_content.append(markdown(f.read()))
-                f.close()
-
-        # write the files
-        for i, file in enumerate(html_files):
-            with open(join("html", file), 'w') as f:
-                f.write(md_content[i])
-                f.close()
-
-
-    def generate_html_with_template(self) -> list[str]:
-        #self.check_for_valid_directory() <- not yet
-        '''
-        Generate both the head, footer and inject content into a html page.
-        Head will be stored at [0] and footer at [2].
-        Markdown or content will be injected into the list at [1].
-        Returns a list of str type.
-        '''
-        page: list[str] = [None, None, None]
-        # generate a hello world page just to test
-        page[0] = "<!DOCTYPE html>\n<html>\n<head>\n\t<title>Test page</title>\n</head>\n<body>\n"
-        page[1] = "\t<h1>Hello World!</h1>\n"
-        page[2] = "</body>\n</html>"
-
-        return page
-    
-    def write_to_file(self, function_to_write: list[str], file: str) -> None:
-        '''
-        Write data returned from a function to a file.
-        '''
-        with open(file, 'w') as f:
-            for line in function_to_write:
-                f.write(line)
-        f.close()
-
-
-m = Manager()
-m.convert_markdown_to_html()
+g = Generator()
+g.convert_markdown_to_html()
