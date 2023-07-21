@@ -1,6 +1,8 @@
-from os import getcwd
+from os import getcwd, listdir
 from os.path import join, exists
 from sys import exit
+
+from markdown import markdown
 
 
 class Manager:
@@ -37,6 +39,30 @@ class Manager:
         self.check_for_valid_directory()
         # go through /posts and convert any .md files to .html files.
 
+        # build file names
+        md_files: list[str] = []
+        for file in listdir("posts"):
+            if file.split(".")[-1] == "md":
+                md_files.append(file)
+        
+        html_files: list[str] = []
+        for file in md_files:
+            html_files.append(file.split(".")[0] + ".html")
+
+        # read the files
+        md_content: list[str] = []
+        for file in md_files:
+            with open(join("posts", file), 'r') as f:
+                md_content.append(markdown(f.read()))
+                f.close()
+
+        # write the files
+        for i, file in enumerate(html_files):
+            with open(join("html", file), 'w') as f:
+                f.write(md_content[i])
+                f.close()
+
+
     def generate_html_with_template(self) -> list[str]:
         #self.check_for_valid_directory() <- not yet
         '''
@@ -64,4 +90,4 @@ class Manager:
 
 
 m = Manager()
-m.write_to_file(m.generate_html_with_template(), "index.html")
+m.convert_markdown_to_html()
