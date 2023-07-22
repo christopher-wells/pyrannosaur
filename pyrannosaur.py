@@ -3,6 +3,7 @@ from os.path import join, exists
 from sys import exit
 
 from markdown import markdown
+from jinja2 import Environment, PackageLoader, select_autoescape
 
 
 class ContentGenerator:
@@ -13,13 +14,15 @@ class ContentGenerator:
     def __init__(self) -> None:
         self.dm = DirectoryManager()
         self.tl = TemplateLoader()
+        self.tl
     
     # md/html functions
 
     def convert_markdown_to_html(self) -> None:
         self.dm.check_for_valid_directory()
-        # go through /posts and convert any .md files to .html files.
-
+        '''
+        Go through /posts and convert any .md files to .html files.
+        '''
         # build file names
         md_files: list[str] = []
         for file in listdir("posts"):
@@ -43,33 +46,12 @@ class ContentGenerator:
                 f.write(md_content[i])
                 f.close()
     
-    def generate_page_with_template(self) -> list[str]:
+    def write_to_page_from_template(self, file, title) -> None:
         self.dm.check_for_valid_directory()
-        '''
-        Generate both the head, footer and inject content into a html page.
-        Head will be stored at [0] and footer at [2].
-        Markdown or content will be injected into the list at [1].
-        Returns a list of str type.
-        '''
-        page: list[str] = [None, None, None]
-        # generate a hello world page just to test
-        page[0] = "<!DOCTYPE html>\n<html>\n<head>\n\t<title>Test page</title>\n</head>\n<body>\n"
-        page[1] = "\t<h1>Hello World!</h1>\n"
-        page[2] = "</body>\n</html>"
-
-        return page
-    
-    # io functions
-
-    def write_to_file(self, function_to_write: list[str], file: str) -> None:
-        self.dm.check_for_valid_directory()
-        '''
-        Write data returned from a function to a file.
-        '''
         with open(file, 'w') as f:
-            for line in function_to_write:
-                f.write(line)
-        f.close()
+            f.write(
+                self.tl.base_template.render(title=title)
+            )
     
 
 class DirectoryManager:
@@ -109,8 +91,14 @@ class TemplateLoader:
     '''
     Defines and loads templates for pyrannosaur websites.
     '''
-    pass
+    def __init__(self) -> None:
+        self.env = Environment(
+            loader=PackageLoader("pyrannosaur"),
+            autoescape=select_autoescape()
+            )
+        self.base_template = self.env.get_template("base.html")
 
 
 cg = ContentGenerator()
 cg.convert_markdown_to_html()
+cg.write_to_page_from_template("index.html", "Hello World!")
