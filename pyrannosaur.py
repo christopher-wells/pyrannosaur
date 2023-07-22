@@ -7,11 +7,12 @@ from markdown import markdown
 
 class ContentGenerator:
     '''
-    Generates content such as directories, pages and links within .html files
-    for new posts in a new or existing pyrannosaur website.
+    Generates content such as directories, pages, links and templates within
+    .html files for new posts in a new or existing pyrannosaur website.
     '''
     def __init__(self) -> None:
         self.dm = DirectoryManager()
+        self.tl = TemplateLoader()
     
     # md/html functions
 
@@ -71,8 +72,6 @@ class ContentGenerator:
         f.close()
     
 
-    
-
 class DirectoryManager:
     '''
     Manages directories in a pyrannosaur website.
@@ -111,6 +110,7 @@ class TemplateLoader:
     Defines and loads templates for pyrannosaur websites.
     '''
     pass
+
 
 cg = ContentGenerator()
 cg.convert_markdown_to_html()
