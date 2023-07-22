@@ -5,16 +5,18 @@ from sys import exit
 from markdown import markdown
 
 
-class Generator:
+class ContentGenerator:
     '''
     Generates content such as directories, pages and links within .html files
     for new posts in a new or existing pyrannosaur website.
     '''
     def __init__(self) -> None:
-        self.m = Manager()
+        self.dm = DirectoryManager()
+    
+    # md/html functions
 
     def convert_markdown_to_html(self) -> None:
-        self.m.check_for_valid_directory()
+        self.dm.check_for_valid_directory()
         # go through /posts and convert any .md files to .html files.
 
         # build file names
@@ -39,19 +41,9 @@ class Generator:
             with open(join("html", file), 'w') as f:
                 f.write(md_content[i])
                 f.close()
-
-    def write_to_file(self, function_to_write: list[str], file: str) -> None:
-        self.m.check_for_valid_directory()
-        '''
-        Write data returned from a function to a file.
-        '''
-        with open(file, 'w') as f:
-            for line in function_to_write:
-                f.write(line)
-        f.close()
     
     def generate_page_with_template(self) -> list[str]:
-        self.m.check_for_valid_directory()
+        self.dm.check_for_valid_directory()
         '''
         Generate both the head, footer and inject content into a html page.
         Head will be stored at [0] and footer at [2].
@@ -66,10 +58,24 @@ class Generator:
 
         return page
     
+    # io functions
 
-class Manager:
+    def write_to_file(self, function_to_write: list[str], file: str) -> None:
+        self.dm.check_for_valid_directory()
+        '''
+        Write data returned from a function to a file.
+        '''
+        with open(file, 'w') as f:
+            for line in function_to_write:
+                f.write(line)
+        f.close()
+    
+
+    
+
+class DirectoryManager:
     '''
-    Manages files/directories in a pyrannosaur website.
+    Manages directories in a pyrannosaur website.
     '''
     def __init__(self) -> None:
         '''
@@ -106,5 +112,5 @@ class TemplateLoader:
     '''
     pass
 
-g = Generator()
-g.convert_markdown_to_html()
+cg = ContentGenerator()
+cg.convert_markdown_to_html()
