@@ -14,7 +14,6 @@ class ContentGenerator:
     def __init__(self) -> None:
         self.dm = DirectoryManager()
         self.tl = TemplateLoader()
-        self.tl
     
     # md/html functions
 
