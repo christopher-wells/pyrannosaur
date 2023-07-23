@@ -42,7 +42,12 @@ class ContentGenerator:
         # write the files
         for i, file in enumerate(html_files):
             with open(join("archive", file), 'w') as f:
-                f.write(self.tl.base_template.render(title=f"Post {i}", content=md_content[i]))
+                f.write(
+                    self.tl.base_template.render(
+                        title=f"Post {i}",
+                        content=md_content[i]
+                        )
+                    )
                 f.close()
     
 
