@@ -31,7 +31,7 @@ It's still very early days for this project but if you wish to run the code and 
 
 ## Authors
 
-ex. [Christopher Wells](https://github.com/christopher-wells)
+* [Christopher Wells](https://github.com/christopher-wells)
 
 ## Version History
 
