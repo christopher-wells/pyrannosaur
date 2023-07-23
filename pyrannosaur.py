@@ -45,12 +45,15 @@ class ContentGenerator:
                 "html/posts", file,
                 self.tl.base_template.render(title=f"{html_files[i]}",
                                              content=md_content[i]))
-            
+
         # update archive.html
         archive: list[str] = []
         for file in html_files:
-            archive.append(f"<a href=\"posts/{file}\">{file.split('.')[0]}</a>")
-        self.fm.write_to_file("html", "archive.html", self.tl.archive_template.render(title="Post Archive", archive=archive))
+            archive.append(
+                f"<a href=\"posts/{file}\">{file.split('.')[0]}</a>")
+        self.fm.write_to_file(
+            "html", "index.html",
+            self.tl.index_template.render(title="Site Index", archive=archive))
 
 
 class FileManager:
@@ -118,7 +121,7 @@ class TemplateLoader:
         self.env = Environment(loader=FileSystemLoader("templates"),
                                autoescape=select_autoescape())
         self.base_template = self.env.get_template("base.html")
-        self.archive_template = self.env.get_template("archive.html")
+        self.index_template = self.env.get_template("index.html")
 
 
 cg = ContentGenerator()
