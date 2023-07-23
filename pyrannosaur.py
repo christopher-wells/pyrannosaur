@@ -3,7 +3,7 @@ from os.path import join, exists
 from sys import exit
 
 from markdown import markdown
-from jinja2 import Environment, PackageLoader, select_autoescape
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 
 class ContentGenerator:
@@ -42,9 +42,15 @@ class ContentGenerator:
         # write the files
         for i, file in enumerate(html_files):
             self.fm.write_to_file(
-                "archive", file,
-                self.tl.base_template.render(title=f"Post {i}",
+                "html/posts", file,
+                self.tl.base_template.render(title=f"{html_files[i]}",
                                              content=md_content[i]))
+            
+        # update archive.html
+        archive: list[str] = []
+        for file in html_files:
+            archive.append(f"<a href=\"posts/{file}\">{file.split('.')[0]}</a>")
+        self.fm.write_to_file("html", "archive.html", self.tl.archive_template.render(title="Post Archive", archive=archive))
 
 
 class FileManager:
@@ -82,6 +88,8 @@ class DirectoryManager:
             join(self.BASE_URL, 'posts')) else None
         self.TEMPLATE_URL: str = join(self.BASE_URL, 'templates') if exists(
             join(self.BASE_URL, 'templates')) else None
+        self.HTML_URL: str = join(self.BASE_URL, 'html') if exists(
+            join(self.BASE_URL, 'posts')) else None
 
     def check_for_valid_directory(self) -> None:
         '''
@@ -91,9 +99,9 @@ class DirectoryManager:
         Function called whenever modifying or generating new posts/pages to
         prevent unneccesary errors or file read/writes.
         '''
-        if self.POST_URL is None or self.TEMPLATE_URL is None:
+        if self.POST_URL is None or self.TEMPLATE_URL is None or self.HTML_URL is None:
             print(
-                "The directory does not contain a /posts or /templates directory"
+                "The directory does not contain /html, /posts or /templates directory"
             )
             print(
                 "Check the directory path is correct and run the script again."
@@ -107,9 +115,10 @@ class TemplateLoader:
     '''
 
     def __init__(self) -> None:
-        self.env = Environment(loader=PackageLoader("pyrannosaur"),
+        self.env = Environment(loader=FileSystemLoader("templates"),
                                autoescape=select_autoescape())
         self.base_template = self.env.get_template("base.html")
+        self.archive_template = self.env.get_template("archive.html")
 
 
 cg = ContentGenerator()

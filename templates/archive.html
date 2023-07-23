@@ -8,10 +8,14 @@
 <body>
 
 <nav>
-    <a href="#">Home</a> &rarr; <a href="#">Archive</a>
+    <a href="index.html">Home</a> &rarr; <a href="archive.html">Archive</a>
 </nav>
 
-{{ content|safe }}
+<ul>
+{% for link in archive %}
+    <li>{{ link|safe }}</li>
+{% endfor %}
+</ul>
 
 </body>
 </html>
