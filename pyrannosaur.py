@@ -14,6 +14,7 @@ class ContentGenerator:
     def __init__(self) -> None:
         self.dm = DirectoryManager()
         self.tl = TemplateLoader()
+        self.fm = FileManager()
     
     # md/html functions
 
@@ -35,21 +36,42 @@ class ContentGenerator:
         # read the files
         md_content: list[str] = []
         for file in md_files:
-            with open(join("posts", file), 'r') as f:
-                md_content.append(markdown(f.read()))
-                f.close()
+            md_content.append(
+                markdown(
+                    self.fm.read_from_file("posts", file)
+                )
+            )
 
         # write the files
         for i, file in enumerate(html_files):
-            with open(join("archive", file), 'w') as f:
-                f.write(
-                    self.tl.base_template.render(
+            self.fm.write_to_file(
+                "archive",
+                file,
+                self.tl.base_template.render(
                         title=f"Post {i}",
                         content=md_content[i]
-                        )
                     )
-                f.close()
-    
+                )
+
+
+class FileManager:
+    '''
+    Performs basic io for files such as reading and writing.
+    '''
+    def __init__(self) -> None:
+        pass
+
+    def write_to_file(self, dir: str, file: str, operation) -> None:
+        with open(join(dir, file), 'w') as f:
+            f.write(operation)
+            f.close()
+
+    def read_from_file(self, dir: str, file: str) -> list[str]:
+        with open(join(dir, file), 'r') as f:
+            data = f.read()
+            f.close()
+        return data
+
 
 class DirectoryManager:
     '''
