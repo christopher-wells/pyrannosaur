@@ -11,11 +11,12 @@ class ContentGenerator:
     Generates content such as directories, pages, links and templates within
     .html files for new posts in a new or existing pyrannosaur website.
     '''
+
     def __init__(self) -> None:
         self.dm = DirectoryManager()
         self.tl = TemplateLoader()
         self.fm = FileManager()
-    
+
     # md/html functions
 
     def convert_markdown_to_html(self) -> None:
@@ -28,7 +29,7 @@ class ContentGenerator:
         for file in listdir("posts"):
             if file.split(".")[-1] == "md":
                 md_files.append(file)
-        
+
         html_files: list[str] = []
         for file in md_files:
             html_files.append(file.split(".")[0] + ".html")
@@ -36,28 +37,21 @@ class ContentGenerator:
         # read the files
         md_content: list[str] = []
         for file in md_files:
-            md_content.append(
-                markdown(
-                    self.fm.read_from_file("posts", file)
-                )
-            )
+            md_content.append(markdown(self.fm.read_from_file("posts", file)))
 
         # write the files
         for i, file in enumerate(html_files):
             self.fm.write_to_file(
-                "archive",
-                file,
-                self.tl.base_template.render(
-                        title=f"Post {i}",
-                        content=md_content[i]
-                    )
-                )
+                "archive", file,
+                self.tl.base_template.render(title=f"Post {i}",
+                                             content=md_content[i]))
 
 
 class FileManager:
     '''
     Performs basic io for files such as reading and writing.
     '''
+
     def __init__(self) -> None:
         pass
 
@@ -68,7 +62,7 @@ class FileManager:
 
     def read_from_file(self, dir: str, file: str) -> list[str]:
         with open(join(dir, file), 'r') as f:
-            data = f.read()
+            data: str = f.read()
             f.close()
         return data
 
@@ -77,6 +71,7 @@ class DirectoryManager:
     '''
     Manages directories in a pyrannosaur website.
     '''
+
     def __init__(self) -> None:
         '''
         Initialise if posts/templates directories exist if they don't exist
@@ -110,11 +105,10 @@ class TemplateLoader:
     '''
     Defines and loads templates for a pyrannosaur website.
     '''
+
     def __init__(self) -> None:
-        self.env = Environment(
-            loader=PackageLoader("pyrannosaur"),
-            autoescape=select_autoescape()
-            )
+        self.env = Environment(loader=PackageLoader("pyrannosaur"),
+                               autoescape=select_autoescape())
         self.base_template = self.env.get_template("base.html")
 
 
