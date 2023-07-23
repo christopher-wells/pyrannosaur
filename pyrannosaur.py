@@ -41,16 +41,9 @@ class ContentGenerator:
 
         # write the files
         for i, file in enumerate(html_files):
-            with open(join("html", file), 'w') as f:
-                f.write(md_content[i])
+            with open(join("archive", file), 'w') as f:
+                f.write(self.tl.base_template.render(title=f"Post {i}", content=md_content[i]))
                 f.close()
-    
-    def write_to_page_from_template(self, file, title) -> None:
-        self.dm.check_for_valid_directory()
-        with open(file, 'w') as f:
-            f.write(
-                self.tl.base_template.render(title=title)
-            )
     
 
 class DirectoryManager:
@@ -88,7 +81,7 @@ class DirectoryManager:
 
 class TemplateLoader:
     '''
-    Defines and loads templates for pyrannosaur websites.
+    Defines and loads templates for a pyrannosaur website.
     '''
     def __init__(self) -> None:
         self.env = Environment(
@@ -100,4 +93,3 @@ class TemplateLoader:
 
 cg = ContentGenerator()
 cg.convert_markdown_to_html()
-cg.write_to_page_from_template("index.html", "Hello World!")
