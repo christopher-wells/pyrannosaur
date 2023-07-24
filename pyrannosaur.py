@@ -1,4 +1,4 @@
-from os import getcwd, listdir
+from os import getcwd, listdir, mkdir
 from os.path import join, exists
 from sys import exit
 
@@ -91,8 +91,12 @@ class DirectoryManager:
             join(self.BASE_URL, 'posts')) else None
         self.TEMPLATE_URL: str = join(self.BASE_URL, 'templates') if exists(
             join(self.BASE_URL, 'templates')) else None
-        self.HTML_URL: str = join(self.BASE_URL, 'html') if exists(
-            join(self.BASE_URL, 'posts')) else None
+        # if valid directory create the output directories
+        if self.POST_URL is not None or self.TEMPLATE_URL is not None:
+            if not exists("html"):
+                mkdir("html")
+            if not exists("html/posts"):
+                mkdir("html/posts")
 
     def check_for_valid_directory(self) -> None:
         '''
@@ -102,9 +106,9 @@ class DirectoryManager:
         Function called whenever modifying or generating new posts/pages to
         prevent unneccesary errors or file read/writes.
         '''
-        if self.POST_URL is None or self.TEMPLATE_URL is None or self.HTML_URL is None:
+        if self.POST_URL is None or self.TEMPLATE_URL is None:
             print(
-                "The directory does not contain /html, /posts or /templates directory"
+                "The directory does not contain either /posts or /templates directory"
             )
             print(
                 "Check the directory path is correct and run the script again."
