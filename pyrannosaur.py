@@ -108,7 +108,7 @@ class DirectoryManager:
         '''
         if self.POST_URL is None or self.TEMPLATE_URL is None:
             print(
-                "The directory does not contain either /posts or /templates directory"
+                "The directory does not contain either /posts or /templates directory."
             )
             print(
                 "Check the directory path is correct and run the script again."

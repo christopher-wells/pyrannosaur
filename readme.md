@@ -25,6 +25,8 @@ Add any markdown files to `/posts` then run:
 
 ```python pyrannosaur.py```
 
+Program will not execute if it does not detect `/posts` or `/templates` directories. Run from the same directory as `pyrannosaur.py` to avoid this.
+
 ## Help
 
 It's still very early days for this project but if you wish to run the code and need help, open an issue.
