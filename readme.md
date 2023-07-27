@@ -1,6 +1,6 @@
 # Pyrannosaur
 
-A static site generator for those with small reach.
+A static site generator for those with small reach. Basically I use this to generate the content for my website.
 
 ## Description
 
