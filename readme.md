@@ -46,4 +46,4 @@ This project has no license, you can do what you like with the code.
 
 ## Acknowledgments
 
-* [water.css](https://watercss.kognise.dev/)
+* [classless](https://classless.de/)
