@@ -42,7 +42,7 @@ class ContentGenerator:
         # write the files
         for i, file in enumerate(html_files):
             self.fm.write_to_file(
-                "html/posts", file,
+                join("html", "posts"), file,
                 self.tl.base_template.render(title=f"{html_files[i]}",
                                              content=md_content[i]))
 
@@ -65,15 +65,24 @@ class FileManager:
         pass
 
     def write_to_file(self, dir: str, file: str, operation) -> None:
-        with open(join(dir, file), 'w') as f:
-            f.write(operation)
-            f.close()
+        try:
+            with open(join(dir, file), 'w') as f:
+                f.write(operation)
+        except IOError as e:
+            print(f"Error writing to {join(dir, file)}: {e}")
 
-    def read_from_file(self, dir: str, file: str) -> list[str]:
-        with open(join(dir, file), 'r') as f:
-            data: str = f.read()
-            f.close()
-        return data
+    def read_from_file(self, dir: str, file: str) -> str:
+        try:
+            with open(join(dir, file), 'r') as f:
+                data: str = f.read()
+            return data
+        except IOError as e:
+            print(f"Error reading from {join(dir, file)}: {e}")
+            return ""
+
+
+class InvalidDirectoryError(Exception):
+    pass
 
 
 class DirectoryManager:
@@ -102,18 +111,13 @@ class DirectoryManager:
         '''
         Check if you are in a valid directory.
         A valid directory is one containing /posts and /templates directories.
-        If invalid, the program can exit so that a valid directory can be used.
-        Function called whenever modifying or generating new posts/pages to
-        prevent unneccesary errors or file read/writes.
+        If invalid, the program can raise an InvalidDirectoryError.
         '''
         if self.POST_URL is None or self.TEMPLATE_URL is None:
-            print(
+            raise InvalidDirectoryError(
                 "The directory does not contain either /posts or /templates directory."
+                " Check the directory path is correct and run the script again."
             )
-            print(
-                "Check the directory path is correct and run the script again."
-            )
-            exit(0)
 
 
 class TemplateLoader:
@@ -128,5 +132,10 @@ class TemplateLoader:
         self.index_template = self.env.get_template("index.html")
 
 
-cg = ContentGenerator()
-cg.convert_markdown_to_html()
+try:
+    cg = ContentGenerator()
+    cg.convert_markdown_to_html()
+except InvalidDirectoryError as e:
+    print(f"Error: {e}")
+    # Handle the error, provide feedback, or exit the program
+
